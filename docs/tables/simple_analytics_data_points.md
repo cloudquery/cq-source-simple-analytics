@@ -2,7 +2,7 @@
 
 https://docs.simpleanalytics.com/api/export-data-points
 
-The primary key for this table is **uuid**.
+The composite primary key for this table is (**hostname**, **uuid**).
 It supports incremental syncs.
 
 ## Columns
@@ -16,7 +16,7 @@ It supports incremental syncs.
 |metadata|JSON|
 |added_unix|Int|
 |added_iso|Timestamp|
-|hostname|String|
+|hostname (PK)|String|
 |hostname_original|String|
 |path|String|
 |query|String|

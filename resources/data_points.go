@@ -22,7 +22,7 @@ func DataPoints() *schema.Table {
 		Multiplex:   client.WebsiteMultiplex,
 		Transform: transformers.TransformWithStruct(
 			&simpleanalytics.DataPoint{},
-			transformers.WithPrimaryKeys("UUID"),
+			transformers.WithPrimaryKeys("UUID", "Hostname"),
 		),
 		Columns: []schema.Column{
 			{
