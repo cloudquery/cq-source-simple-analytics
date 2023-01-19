@@ -3,6 +3,10 @@ package client
 import (
 	"context"
 	"fmt"
+	"strings"
+
+	"github.com/cloudquery/cq-source-simple-analytics/internal/simpleanalytics"
+	"github.com/cloudquery/plugin-sdk/backend"
 	"github.com/cloudquery/plugin-sdk/plugins/source"
 	"github.com/cloudquery/plugin-sdk/schema"
 	"github.com/cloudquery/plugin-sdk/specs"
@@ -10,23 +14,42 @@ import (
 )
 
 type Client struct {
-	Logger zerolog.Logger
+	Logger   zerolog.Logger
+	SAClient *simpleanalytics.Client
+	Backend  backend.Backend
+	Website  WebsiteSpec
+	websites []WebsiteSpec
 }
 
 func (c *Client) ID() string {
-	// TODO: Change to either your plugin name or a unique dynamic identifier
-	return "ID"
+	return strings.Join([]string{"simple-analytics", c.Website.Hostname}, ":")
 }
 
-func New(ctx context.Context, logger zerolog.Logger, s specs.Source, _ ...source.Option) (schema.ClientMeta, error) {
-	var pluginSpec Spec
+func (c *Client) withWebsite(website WebsiteSpec) *Client {
+	return &Client{
+		Logger:   c.Logger.With().Str("hostname", website.Hostname).Logger(),
+		SAClient: c.SAClient,
+		Backend:  c.Backend,
+		Website:  website,
+		websites: c.websites,
+	}
+}
 
+func New(_ context.Context, logger zerolog.Logger, s specs.Source, opts source.Options) (schema.ClientMeta, error) {
+	var pluginSpec Spec
 	if err := s.UnmarshalSpec(&pluginSpec); err != nil {
 		return nil, fmt.Errorf("failed to unmarshal plugin spec: %w", err)
 	}
-	// TODO: Add your client initialization here
+	err := pluginSpec.Validate()
+	if err != nil {
+		return nil, fmt.Errorf("failed to validate plugin spec: %w", err)
+	}
 
+	saClient := simpleanalytics.NewClient(pluginSpec.UserId, pluginSpec.APIKey)
 	return &Client{
-		Logger: logger,
+		Logger:   logger,
+		Backend:  opts.Backend,
+		SAClient: saClient,
+		websites: pluginSpec.Websites,
 	}, nil
 }

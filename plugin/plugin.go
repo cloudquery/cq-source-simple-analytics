@@ -13,10 +13,10 @@ var (
 
 func Plugin() *source.Plugin {
 	return source.NewPlugin(
-		"cloudquery-simple-analytics",
+		"simple-analytics",
 		Version,
 		schema.Tables{
-			resources.SampleTable(),
+			resources.DataPoints(),
 		},
 		client.New,
 	)
