@@ -38,8 +38,10 @@ func DataPoints() *schema.Table {
 func fetchDataPoints(ctx context.Context, meta schema.ClientMeta, parent *schema.Resource, res chan<- interface{}) error {
 	c := meta.(*client.Client)
 
-	// Fetch cursor, but default to year SA was founded otherwise (assuming there is no data before that)
-	start := time.Date(2018, 1, 1, 0, 0, 0, 0, time.UTC)
+	// Set start time according to these priorities:
+	// 1. backend state
+	// 2. start_time from plugin spec (which defaults to 2018)
+	start := c.Spec.StartTime()
 	if c.Backend != nil {
 		value, err := c.Backend.Get(ctx, tableDataPoints, c.ID())
 		if err != nil {
@@ -47,13 +49,13 @@ func fetchDataPoints(ctx context.Context, meta schema.ClientMeta, parent *schema
 		}
 		if value != "" {
 			c.Logger.Info().Str("cursor", value).Msg("cursor found")
-			start, err = time.Parse(time.RFC3339, value)
+			start, err = time.Parse(client.AllowedTimeLayout, value)
 			if err != nil {
 				return fmt.Errorf("failed to parse cursor from backend: %w", err)
 			}
 		}
 	}
-	end := time.Now()
+	end := c.Spec.EndTime()
 	c.Logger.Info().Time("start", start).Time("end", end).Msg("fetching data points")
 
 	// Stream data points from Simple Analytics, from start time to now.
@@ -75,7 +77,12 @@ func fetchDataPoints(ctx context.Context, meta schema.ClientMeta, parent *schema
 		return c.SAClient.Export(gctx, opts, ch)
 	})
 	for range ch {
-		res <- <-ch
+		v := <-ch
+		if v.UUID == "" {
+			// ignore values without UUID
+			continue
+		}
+		res <- v
 	}
 	err := g.Wait()
 	if err != nil {
@@ -84,12 +91,12 @@ func fetchDataPoints(ctx context.Context, meta schema.ClientMeta, parent *schema
 
 	// Save cursor state to the backend.
 	if c.Backend != nil {
-		// We subtract 15 minutes from the end time to allow for delayed data points
+		// We subtract WindowOverlapSeconds from the end time to allow delayed data points
 		// to be fetched on the next sync. This will cause some duplicates, but
 		// allows us to guarantee at-least-once delivery. Duplicates can be removed
 		// by using overwrite-delete-stale write mode, by de-duplicating in queries,
 		// or by running a post-processing step.
-		newCursor := end.Add(-15 * time.Minute).Format(time.RFC3339)
+		newCursor := end.Add(time.Duration(c.Spec.WindowOverlapSeconds) * time.Second).Format(client.AllowedTimeLayout)
 		err = c.Backend.Set(ctx, tableDataPoints, c.ID(), newCursor)
 		if err != nil {
 			return fmt.Errorf("failed to save cursor to backend: %w", err)

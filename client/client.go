@@ -17,8 +17,8 @@ type Client struct {
 	Logger   zerolog.Logger
 	SAClient *simpleanalytics.Client
 	Backend  backend.Backend
+	Spec     Spec
 	Website  WebsiteSpec
-	websites []WebsiteSpec
 }
 
 func (c *Client) ID() string {
@@ -30,8 +30,8 @@ func (c *Client) withWebsite(website WebsiteSpec) *Client {
 		Logger:   c.Logger.With().Str("hostname", website.Hostname).Logger(),
 		SAClient: c.SAClient,
 		Backend:  c.Backend,
+		Spec:     c.Spec,
 		Website:  website,
-		websites: c.websites,
 	}
 }
 
@@ -44,12 +44,13 @@ func New(_ context.Context, logger zerolog.Logger, s specs.Source, opts source.O
 	if err != nil {
 		return nil, fmt.Errorf("failed to validate plugin spec: %w", err)
 	}
+	pluginSpec.SetDefaults()
 
-	saClient := simpleanalytics.NewClient(pluginSpec.UserId, pluginSpec.APIKey)
+	saClient := simpleanalytics.NewClient(pluginSpec.UserID, pluginSpec.APIKey)
 	return &Client{
 		Logger:   logger,
 		Backend:  opts.Backend,
+		Spec:     pluginSpec,
 		SAClient: saClient,
-		websites: pluginSpec.Websites,
 	}, nil
 }
