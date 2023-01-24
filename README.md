@@ -1,6 +1,6 @@
 # CloudQuery Simple Analytics Source Plugin
 
-This plugin is a Simple Analytics source plugin that can be used to sync data from Simple Analytics to any database, data warehouse, data lake supported by [CloudQuery](https://www.cloudquery.io/), such as PostgreSQL, BigQuery, Athena, and many more.
+A Simple Analytics source plugin for CloudQuery that can be used to sync data from Simple Analytics to any database, data warehouse or data lake supported by [CloudQuery](https://www.cloudquery.io/), such as PostgreSQL, BigQuery, Athena, and many more.
 
 ## Links
 
