@@ -86,12 +86,12 @@ func fetchPageViews(ctx context.Context, meta schema.ClientMeta, parent *schema.
 
 	// Save cursor state to the backend.
 	if c.Backend != nil {
-		// We subtract WindowOverlapSeconds from the end time to allow delayed data points
+		// We subtract a day from the end time to allow delayed data points
 		// to be fetched on the next sync. This will cause some duplicates, but
 		// allows us to guarantee at-least-once delivery. Duplicates can be removed
 		// by using overwrite-delete-stale write mode, by de-duplicating in queries,
 		// or by running a post-processing step.
-		newCursor := end.Add(time.Duration(c.Spec.WindowOverlapSeconds) * time.Second).Format(client.AllowedTimeLayout)
+		newCursor := end.Add(-24 * time.Hour).Format(client.AllowedTimeLayout)
 		err = c.Backend.Set(ctx, tablePageViews, c.ID(), newCursor)
 		if err != nil {
 			return fmt.Errorf("failed to save cursor to backend: %w", err)

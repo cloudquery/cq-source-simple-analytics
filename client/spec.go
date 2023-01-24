@@ -26,27 +26,21 @@ type Spec struct {
 	// Websites is a list of websites to fetch data for.
 	Websites []WebsiteSpec `json:"websites"`
 
-	// StartTimeStr is the time to start fetching data from. If specified, it must use AllowedTimeLayout.
-	StartTimeStr string `json:"start_time"`
+	// StartDateStr is the time to start fetching data from. If specified, it must use AllowedTimeLayout.
+	StartDateStr string `json:"start_date"`
 
-	// EndTimeStr is the time at which to stop fetching data. If not specified, the current time is used.
+	// EndDateStr is the time at which to stop fetching data. If not specified, the current time is used.
 	// If specified, it must use AllowedTimeLayout.
-	EndTimeStr string `json:"end_time"`
+	EndDateStr string `json:"end_date"`
 
-	// WindowOverlapSeconds gives a number of seconds to decrease the start_time by
-	// when starting from an incremental cursor position. This allows for late-arriving data to
-	// be fetched in a subsequent sync and guarantee at-least-once delivery, but can
-	// introduce duplicates.
-	WindowOverlapSeconds int `json:"window_overlap_seconds"`
-
-	// DurationStr is the duration of the time window to fetch historical data for, in days, months or years.
+	// PeriodStr is the duration of the time window to fetch historical data for, in days, months or years.
 	// Examples:
 	//  "7d": past 7 days
 	//  "3m": last 3 months
 	//  "1y": last year
 	// It is used to calculate start_time if it is not specified. If start_time is specified,
 	// duration is ignored.
-	DurationStr string `json:"duration"`
+	PeriodStr string `json:"duration"`
 }
 
 type WebsiteSpec struct {
@@ -69,61 +63,58 @@ func (s Spec) Validate() error {
 			return fmt.Errorf("every website entry must have a hostname")
 		}
 	}
-	if s.StartTimeStr != "" {
-		_, err := time.Parse(AllowedTimeLayout, s.StartTimeStr)
+	if s.StartDateStr != "" {
+		_, err := time.Parse(AllowedTimeLayout, s.StartDateStr)
 		if err != nil {
 			return fmt.Errorf("could not parse start_time: %v", err)
 		}
 	}
-	if s.EndTimeStr != "" {
-		_, err := time.Parse(AllowedTimeLayout, s.EndTimeStr)
+	if s.EndDateStr != "" {
+		_, err := time.Parse(AllowedTimeLayout, s.EndDateStr)
 		if err != nil {
 			return fmt.Errorf("could not parse end_time: %v", err)
 		}
 	}
-	if s.DurationStr != "" {
-		_, err := parseDuration(s.DurationStr)
+	if s.PeriodStr != "" {
+		_, err := parsePeriod(s.PeriodStr)
 		if err != nil {
-			return fmt.Errorf("could not validate duration: %v (should be a number followed by \"d\", \"m\" or \"y\", e.g. \"7d\", \"1m\" or \"3y\")", err)
+			return fmt.Errorf("could not validate period: %v (should be a number followed by \"d\", \"m\" or \"y\", e.g. \"7d\", \"1m\" or \"3y\")", err)
 		}
 	}
 	return nil
 }
 
 func (s *Spec) SetDefaults() {
-	if s.StartTimeStr == "" && s.DurationStr == "" {
-		s.StartTimeStr = DefaultStartTime.Format(AllowedTimeLayout)
+	if s.StartDateStr == "" && s.PeriodStr == "" {
+		s.StartDateStr = DefaultStartTime.Format(AllowedTimeLayout)
 	}
-	if s.EndTimeStr == "" {
-		s.EndTimeStr = time.Now().Format(AllowedTimeLayout)
-	}
-	if s.WindowOverlapSeconds == 0 {
-		s.WindowOverlapSeconds = 60
+	if s.EndDateStr == "" {
+		s.EndDateStr = time.Now().Format(AllowedTimeLayout)
 	}
 }
 
 func (s Spec) StartTime() time.Time {
-	if s.StartTimeStr == "" && s.DurationStr != "" {
-		return time.Now().Add(-s.Duration())
+	if s.StartDateStr == "" && s.PeriodStr != "" {
+		return time.Now().Add(-s.Period())
 	}
-	t, _ := time.Parse(AllowedTimeLayout, s.StartTimeStr) // any error should be caught by Validate()
+	t, _ := time.Parse(AllowedTimeLayout, s.StartDateStr) // any error should be caught by Validate()
 	return t
 }
 
 func (s Spec) EndTime() time.Time {
-	t, _ := time.Parse(AllowedTimeLayout, s.EndTimeStr) // any error should be caught by Validate()
+	t, _ := time.Parse(AllowedTimeLayout, s.EndDateStr) // any error should be caught by Validate()
 	return t
 }
 
-func (s Spec) Duration() time.Duration {
-	d, _ := parseDuration(s.DurationStr) // any error should be caught by Validate()
+func (s Spec) Period() time.Duration {
+	d, _ := parsePeriod(s.PeriodStr) // any error should be caught by Validate()
 	return d
 }
 
-func parseDuration(s string) (time.Duration, error) {
+func parsePeriod(s string) (time.Duration, error) {
 	m := reValidDuration.FindStringSubmatch(s)
 	if m == nil {
-		return 0, errors.New("invalid duration")
+		return 0, errors.New("invalid period")
 	}
 	n, err := strconv.Atoi(m[1])
 	if err != nil {
@@ -138,5 +129,5 @@ func parseDuration(s string) (time.Duration, error) {
 		return time.Duration(n) * 365 * 24 * time.Hour, nil
 	}
 	// should never happen, we already validated using regex
-	panic("unhandled duration unit")
+	panic("unhandled period unit")
 }
