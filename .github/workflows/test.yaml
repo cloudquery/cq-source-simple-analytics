@@ -19,15 +19,14 @@ jobs:
       - name: Set up Go 1.x
         uses: actions/setup-go@v3
         with:
-          go-version-file: plugins/source/test/go.mod
+          go-version-file: go.mod
           cache: true
-          cache-dependency-path: plugins/source/test/go.sum
+          cache-dependency-path: go.sum
       - name: golangci-lint
         uses: cloudquery/golangci-lint-action@master
         with:
           version: v1.50.1
-          working-directory: plugins/source/test
-          args: "--config ../../.golangci.yml"
+          args: "--config .golangci.yml"
           skip-pkg-cache: true
           skip-build-cache: true
       - name: Get dependencies
