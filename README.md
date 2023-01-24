@@ -10,6 +10,7 @@ The following configuration file will sync all data points for `mywebsite.com` t
 kind: source
 spec:
   name: "simple-analytics"
+  path: "simpleanalytics/simple-analytics"
   version: "${VERSION}"
   backend: "local"
   tables: 
