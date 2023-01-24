@@ -56,8 +56,8 @@ func (e HTTPError) Error() string {
 }
 
 func (c *Client) get(ctx context.Context, path string, query url.Values) (io.ReadCloser, error) {
-	url := fmt.Sprintf("%s?%s", c.baseURL+path, query.Encode())
-	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
+	uri := fmt.Sprintf("%s?%s", c.baseURL+path, query.Encode())
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, uri, nil)
 	if err != nil {
 		return nil, fmt.Errorf("while creating request: %w", err)
 	}
