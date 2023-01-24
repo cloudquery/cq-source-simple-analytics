@@ -1,5 +1,8 @@
 # CloudQuery Simple Analytics Source Plugin
 
+[![test](https://github.com/cloudquery/cq-source-simple-analytics/actions/workflows/test.yaml/badge.svg)](https://github.com/cloudquery/cq-source-simple-analytics/actions/workflows/test.yaml)
+[![Go Report Card](https://goreportcard.com/badge/github.com/cloudquery/cq-source-simple-analytics)](https://goreportcard.com/report/github.com/cloudquery/cq-source-simple-analytics)
+
 A Simple Analytics source plugin for CloudQuery that loads data from Simple Analytics to any database, data warehouse or data lake supported by [CloudQuery](https://www.cloudquery.io/), such as PostgreSQL, BigQuery, Athena, and many more.
 
 ## Links
