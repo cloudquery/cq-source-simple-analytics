@@ -21,9 +21,11 @@ It supports incremental syncs.
 |country_code|String|
 |device_type|String|
 |document_referrer|String|
+|duration_seconds|Float|
 |hostname (PK)|String|
 |hostname_original|String|
 |is_robot|Bool|
+|is_unique|Bool|
 |lang_language|String|
 |lang_region|String|
 |os_name|String|
@@ -33,6 +35,7 @@ It supports incremental syncs.
 |query|String|
 |screen_height|Int|
 |screen_width|Int|
+|scrolled_percentage|Float|
 |session_id|String|
 |utm_campaign|String|
 |utm_content|String|
@@ -43,6 +46,3 @@ It supports incremental syncs.
 |user_agent|String|
 |viewport_height|Int|
 |viewport_width|Int|
-|duration_seconds|Float|
-|is_unique|Bool|
-|scrolled_percentage|Float|

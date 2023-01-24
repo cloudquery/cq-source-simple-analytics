@@ -19,6 +19,7 @@ It supports incremental syncs.
 |browser_name|String|
 |browser_version|String|
 |country_code|String|
+|datapoint|String|
 |device_type|String|
 |document_referrer|String|
 |hostname|String|
