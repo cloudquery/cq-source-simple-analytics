@@ -70,7 +70,7 @@ func TestExportPageViews(t *testing.T) {
 	if got[len(got)-1].UUID != "0bec40c0-06a6-43b2-ac38-b209a08de836" {
 		t.Errorf("unexpected last UUID in results. got: %s, want: %s", got[len(got)-1].UUID, "0bec40c0-06a6-43b2-ac38-b209a08de836")
 	}
-	wantMetadata := map[string]interface{}{
+	wantMetadata := map[string]any{
 		"fieldname_text": "test",
 		"fieldname_date": "2023-01-20T14:57:59.698Z",
 		"fieldname_bool": true,
@@ -172,12 +172,12 @@ func TestExportEvents(t *testing.T) {
 		t.Errorf("unexpected end in request. got: %s, want: %s", q.Get("end"), opts.End.Format("2006-01-02"))
 	}
 
-	// last UUID in testdata file
+	// last added_iso in testdata file
 	pt, _ := time.Parse(time.RFC3339, "2023-01-23T12:43:35.689Z")
-	if got[len(got)-1].AddedISO != pt {
-		t.Errorf("unexpected last UUID in results. got: %s, want: %s", got[len(got)-1].UUID, "0bec40c0-06a6-43b2-ac38-b209a08de836")
+	if !got[len(got)-1].AddedISO.Equal(pt) {
+		t.Errorf("unexpected added_iso in results. got: %s, want: %s", got[len(got)-1].AddedISO, pt)
 	}
-	wantMetadata := map[string]interface{}{
+	wantMetadata := map[string]any{
 		"fieldname_text": "test",
 		"fieldname_date": "2023-01-20T14:57:59.698Z",
 		"fieldname_bool": true,

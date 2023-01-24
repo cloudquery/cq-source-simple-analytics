@@ -21,9 +21,9 @@ var defaultHTTPClient = http.DefaultClient
 
 type Option func(*Client)
 
-func WithBaseURL(url string) Option {
+func WithBaseURL(uri string) Option {
 	return func(c *Client) {
-		c.baseURL = url
+		c.baseURL = uri
 	}
 }
 

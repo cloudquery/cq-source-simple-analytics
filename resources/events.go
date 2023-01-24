@@ -37,7 +37,7 @@ func Events() *schema.Table {
 	}
 }
 
-func fetchEvents(ctx context.Context, meta schema.ClientMeta, parent *schema.Resource, res chan<- interface{}) error {
+func fetchEvents(ctx context.Context, meta schema.ClientMeta, parent *schema.Resource, res chan<- any) error {
 	c := meta.(*client.Client)
 
 	// Set start time according to these priorities:

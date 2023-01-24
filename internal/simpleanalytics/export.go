@@ -81,73 +81,73 @@ var ExportFieldsPageViews = []string{
 }
 
 type Event struct {
-	AddedISO         time.Time              `json:"added_iso"`
-	AddedUnix        uint64                 `json:"added_unix"`
-	BrowserName      string                 `json:"browser_name"`
-	BrowserVersion   string                 `json:"browser_version"`
-	CountryCode      string                 `json:"country_code"`
-	Datapoint        string                 `json:"datapoint"`
-	DeviceType       string                 `json:"device_type"`
-	DocumentReferrer string                 `json:"document_referrer"`
-	Hostname         string                 `json:"hostname"`
-	HostnameOriginal string                 `json:"hostname_original"`
-	IsRobot          bool                   `json:"is_robot"`
-	LangLanguage     string                 `json:"lang_language"`
-	LangRegion       string                 `json:"lang_region"`
-	Metadata         map[string]interface{} `json:"-"`
-	OSName           string                 `json:"os_name"`
-	OSVersion        string                 `json:"os_version"`
-	Path             string                 `json:"path"`
-	PathAndQuery     string                 `json:"path_and_query"`
-	Query            string                 `json:"query"`
-	ScreenHeight     int64                  `json:"screen_height"`
-	ScreenWidth      int64                  `json:"screen_width"`
-	SessionID        string                 `json:"session_id"`
-	UTMCampaign      string                 `json:"utm_campaign"`
-	UTMContent       string                 `json:"utm_content"`
-	UTMMedium        string                 `json:"utm_medium"`
-	UTMSource        string                 `json:"utm_source"`
-	UTMTerm          string                 `json:"utm_term"`
-	UUID             string                 `json:"uuid"`
-	UserAgent        string                 `json:"user_agent"`
-	ViewportHeight   int64                  `json:"viewport_height"`
-	ViewportWidth    int64                  `json:"viewport_width"`
+	AddedISO         time.Time      `json:"added_iso"`
+	AddedUnix        uint64         `json:"added_unix"`
+	BrowserName      string         `json:"browser_name"`
+	BrowserVersion   string         `json:"browser_version"`
+	CountryCode      string         `json:"country_code"`
+	Datapoint        string         `json:"datapoint"`
+	DeviceType       string         `json:"device_type"`
+	DocumentReferrer string         `json:"document_referrer"`
+	Hostname         string         `json:"hostname"`
+	HostnameOriginal string         `json:"hostname_original"`
+	IsRobot          bool           `json:"is_robot"`
+	LangLanguage     string         `json:"lang_language"`
+	LangRegion       string         `json:"lang_region"`
+	Metadata         map[string]any `json:"-"`
+	OSName           string         `json:"os_name"`
+	OSVersion        string         `json:"os_version"`
+	Path             string         `json:"path"`
+	PathAndQuery     string         `json:"path_and_query"`
+	Query            string         `json:"query"`
+	ScreenHeight     int64          `json:"screen_height"`
+	ScreenWidth      int64          `json:"screen_width"`
+	SessionID        string         `json:"session_id"`
+	UTMCampaign      string         `json:"utm_campaign"`
+	UTMContent       string         `json:"utm_content"`
+	UTMMedium        string         `json:"utm_medium"`
+	UTMSource        string         `json:"utm_source"`
+	UTMTerm          string         `json:"utm_term"`
+	UUID             string         `json:"uuid"`
+	UserAgent        string         `json:"user_agent"`
+	ViewportHeight   int64          `json:"viewport_height"`
+	ViewportWidth    int64          `json:"viewport_width"`
 }
 
 type PageView struct {
-	AddedISO           time.Time              `json:"added_iso"`
-	AddedUnix          uint64                 `json:"added_unix"`
-	BrowserName        string                 `json:"browser_name"`
-	BrowserVersion     string                 `json:"browser_version"`
-	CountryCode        string                 `json:"country_code"`
-	DeviceType         string                 `json:"device_type"`
-	DocumentReferrer   string                 `json:"document_referrer"`
-	DurationSeconds    float64                `json:"duration_seconds"`
-	Hostname           string                 `json:"hostname"`
-	HostnameOriginal   string                 `json:"hostname_original"`
-	IsRobot            bool                   `json:"is_robot"`
-	IsUnique           bool                   `json:"is_unique"`
-	LangLanguage       string                 `json:"lang_language"`
-	LangRegion         string                 `json:"lang_region"`
-	Metadata           map[string]interface{} `json:"-"`
-	OSName             string                 `json:"os_name"`
-	OSVersion          string                 `json:"os_version"`
-	Path               string                 `json:"path"`
-	PathAndQuery       string                 `json:"path_and_query"`
-	Query              string                 `json:"query"`
-	ScreenHeight       int64                  `json:"screen_height"`
-	ScreenWidth        int64                  `json:"screen_width"`
-	ScrolledPercentage float64                `json:"scrolled_percentage"`
-	SessionID          string                 `json:"session_id"`
-	UTMCampaign        string                 `json:"utm_campaign"`
-	UTMContent         string                 `json:"utm_content"`
-	UTMMedium          string                 `json:"utm_medium"`
-	UTMSource          string                 `json:"utm_source"`
-	UTMTerm            string                 `json:"utm_term"`
-	UUID               string                 `json:"uuid"`
-	UserAgent          string                 `json:"user_agent"`
-	ViewportHeight     int64                  `json:"viewport_height"`
-	ViewportWidth      int64                  `json:"viewport_width"`
+	AddedISO           time.Time      `json:"added_iso"`
+	AddedUnix          uint64         `json:"added_unix"`
+	BrowserName        string         `json:"browser_name"`
+	BrowserVersion     string         `json:"browser_version"`
+	CountryCode        string         `json:"country_code"`
+	DeviceType         string         `json:"device_type"`
+	DocumentReferrer   string         `json:"document_referrer"`
+	DurationSeconds    float64        `json:"duration_seconds"`
+	Hostname           string         `json:"hostname"`
+	HostnameOriginal   string         `json:"hostname_original"`
+	IsRobot            bool           `json:"is_robot"`
+	IsUnique           bool           `json:"is_unique"`
+	LangLanguage       string         `json:"lang_language"`
+	LangRegion         string         `json:"lang_region"`
+	Metadata           map[string]any `json:"-"`
+	OSName             string         `json:"os_name"`
+	OSVersion          string         `json:"os_version"`
+	Path               string         `json:"path"`
+	PathAndQuery       string         `json:"path_and_query"`
+	Query              string         `json:"query"`
+	ScreenHeight       int64          `json:"screen_height"`
+	ScreenWidth        int64          `json:"screen_width"`
+	ScrolledPercentage float64        `json:"scrolled_percentage"`
+	SessionID          string         `json:"session_id"`
+	UTMCampaign        string         `json:"utm_campaign"`
+	UTMContent         string         `json:"utm_content"`
+	UTMMedium          string         `json:"utm_medium"`
+	UTMSource          string         `json:"utm_source"`
+	UTMTerm            string         `json:"utm_term"`
+	UUID               string         `json:"uuid"`
+	UserAgent          string         `json:"user_agent"`
+	ViewportHeight     int64          `json:"viewport_height"`
+	ViewportWidth      int64          `json:"viewport_width"`
 }
 
 // ExportOptions sets options for the export method
@@ -178,11 +178,11 @@ func (c *Client) ExportPageViews(ctx context.Context, opts ExportOptions, out ch
 		if err := json.Unmarshal(b, &v); err != nil {
 			return fmt.Errorf("failed to decode JSON: %w", err)
 		}
-		m := map[string]interface{}{}
+		m := map[string]any{}
 		if err := json.Unmarshal(b, &m); err != nil {
 			return fmt.Errorf("failed to decode metadata fields in JSON: %w", err)
 		}
-		v.Metadata = map[string]interface{}{}
+		v.Metadata = map[string]any{}
 		for k, mv := range m {
 			if strings.HasPrefix(k, "metadata.") && mv != nil {
 				v.Metadata[k[9:]] = mv
@@ -213,11 +213,11 @@ func (c *Client) ExportEvents(ctx context.Context, opts ExportOptions, out chan<
 		if err := json.Unmarshal(b, &v); err != nil {
 			return fmt.Errorf("failed to decode JSON: %w", err)
 		}
-		m := map[string]interface{}{}
+		m := map[string]any{}
 		if err := json.Unmarshal(b, &m); err != nil {
 			return fmt.Errorf("failed to decode metadata fields in JSON: %w", err)
 		}
-		v.Metadata = map[string]interface{}{}
+		v.Metadata = map[string]any{}
 		for k, mv := range m {
 			if strings.HasPrefix(k, "metadata.") && mv != nil {
 				v.Metadata[k[9:]] = mv
