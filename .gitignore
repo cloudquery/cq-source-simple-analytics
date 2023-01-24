@@ -1,1 +1,4 @@
+dist/
+vendor/
+bin/
 cq-source-simple-analytics
