@@ -1,4 +1,4 @@
-# Table: simple_analytics_data_points
+# Table: simple_analytics_page_views
 
 https://docs.simpleanalytics.com/api/export-data-points
 
@@ -14,33 +14,35 @@ It supports incremental syncs.
 |_cq_id|UUID|
 |_cq_parent_id|UUID|
 |metadata|JSON|
-|added_unix|Int|
 |added_iso|Timestamp|
-|hostname (PK)|String|
-|hostname_original|String|
-|path|String|
-|query|String|
-|is_unique|Bool|
-|is_robot|Bool|
-|document_referrer|String|
-|utm_source|String|
-|utm_medium|String|
-|utm_campaign|String|
-|utm_content|String|
-|utm_term|String|
-|scrolled_percentage|Float|
-|duration_seconds|Float|
-|viewport_width|Int|
-|viewport_height|Int|
-|screen_width|Int|
-|screen_height|Int|
-|user_agent|String|
-|device_type|String|
-|country_code|String|
+|added_unix|Int|
 |browser_name|String|
 |browser_version|String|
+|country_code|String|
+|device_type|String|
+|document_referrer|String|
+|hostname (PK)|String|
+|hostname_original|String|
+|is_robot|Bool|
+|lang_language|String|
+|lang_region|String|
 |os_name|String|
 |os_version|String|
-|lang_region|String|
-|lang_language|String|
+|path|String|
+|path_and_query|String|
+|query|String|
+|screen_height|Int|
+|screen_width|Int|
+|session_id|String|
+|utm_campaign|String|
+|utm_content|String|
+|utm_medium|String|
+|utm_source|String|
+|utm_term|String|
 |uuid (PK)|String|
+|user_agent|String|
+|viewport_height|Int|
+|viewport_width|Int|
+|duration_seconds|Float|
+|is_unique|Bool|
+|scrolled_percentage|Float|

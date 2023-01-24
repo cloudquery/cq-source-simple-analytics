@@ -47,7 +47,8 @@ func NewClient(userId, apiKey string, opts ...Option) *Client {
 }
 
 type HTTPError struct {
-	Code int
+	Code    int
+	Message string
 }
 
 func (e HTTPError) Error() string {
@@ -68,7 +69,9 @@ func (c *Client) get(ctx context.Context, path string, query url.Values) (io.Rea
 		return nil, err
 	}
 	if r.StatusCode != http.StatusOK {
-		return nil, HTTPError{Code: r.StatusCode}
+		body, _ := io.ReadAll(r.Body)
+		r.Body.Close()
+		return nil, HTTPError{Code: r.StatusCode, Message: string(body)}
 	}
 	return r.Body, nil
 }

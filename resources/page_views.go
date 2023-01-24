@@ -12,17 +12,17 @@ import (
 	"golang.org/x/sync/errgroup"
 )
 
-const tableDataPoints = "simple_analytics_data_points"
+const tablePageViews = "simple_analytics_page_views"
 
-func DataPoints() *schema.Table {
+func PageViews() *schema.Table {
 	return &schema.Table{
-		Name:        tableDataPoints,
+		Name:        tablePageViews,
 		Description: "https://docs.simpleanalytics.com/api/export-data-points",
-		Resolver:    fetchDataPoints,
+		Resolver:    fetchPageViews,
 		Multiplex:   client.WebsiteMultiplex,
 		Transform: transformers.TransformWithStruct(
-			&simpleanalytics.DataPoint{},
-			transformers.WithPrimaryKeys("UUID", "Hostname"),
+			&simpleanalytics.PageView{},
+			transformers.WithPrimaryKeys("Hostname", "UUID"),
 		),
 		Columns: []schema.Column{
 			{
@@ -35,7 +35,7 @@ func DataPoints() *schema.Table {
 	}
 }
 
-func fetchDataPoints(ctx context.Context, meta schema.ClientMeta, parent *schema.Resource, res chan<- interface{}) error {
+func fetchPageViews(ctx context.Context, meta schema.ClientMeta, parent *schema.Resource, res chan<- interface{}) error {
 	c := meta.(*client.Client)
 
 	// Set start time according to these priorities:
@@ -43,7 +43,7 @@ func fetchDataPoints(ctx context.Context, meta schema.ClientMeta, parent *schema
 	// 2. start_time from plugin spec (which defaults to 2018)
 	start := c.Spec.StartTime()
 	if c.Backend != nil {
-		value, err := c.Backend.Get(ctx, tableDataPoints, c.ID())
+		value, err := c.Backend.Get(ctx, tablePageViews, c.ID())
 		if err != nil {
 			return fmt.Errorf("failed to get cursor from backend: %w", err)
 		}
@@ -59,8 +59,8 @@ func fetchDataPoints(ctx context.Context, meta schema.ClientMeta, parent *schema
 	c.Logger.Info().Time("start", start).Time("end", end).Msg("fetching data points")
 
 	// Stream data points from Simple Analytics, from start time to now.
-	fields := make([]string, len(simpleanalytics.AllExportFields))
-	copy(fields, simpleanalytics.AllExportFields)
+	fields := make([]string, len(simpleanalytics.ExportFieldsPageViews))
+	copy(fields, simpleanalytics.ExportFieldsPageViews)
 	for _, field := range c.Website.MetadataFields {
 		fields = append(fields, "metadata."+field)
 	}
@@ -71,17 +71,12 @@ func fetchDataPoints(ctx context.Context, meta schema.ClientMeta, parent *schema
 		Fields:   fields,
 	}
 	g, gctx := errgroup.WithContext(ctx)
-	var ch = make(chan simpleanalytics.DataPoint)
+	var ch = make(chan simpleanalytics.PageView)
 	g.Go(func() error {
 		defer close(ch)
-		return c.SAClient.Export(gctx, opts, ch)
+		return c.SAClient.ExportPageViews(gctx, opts, ch)
 	})
-	for range ch {
-		v := <-ch
-		if v.UUID == "" {
-			// ignore values without UUID
-			continue
-		}
+	for v := range ch {
 		res <- v
 	}
 	err := g.Wait()
@@ -97,7 +92,7 @@ func fetchDataPoints(ctx context.Context, meta schema.ClientMeta, parent *schema
 		// by using overwrite-delete-stale write mode, by de-duplicating in queries,
 		// or by running a post-processing step.
 		newCursor := end.Add(time.Duration(c.Spec.WindowOverlapSeconds) * time.Second).Format(client.AllowedTimeLayout)
-		err = c.Backend.Set(ctx, tableDataPoints, c.ID(), newCursor)
+		err = c.Backend.Set(ctx, tablePageViews, c.ID(), newCursor)
 		if err != nil {
 			return fmt.Errorf("failed to save cursor to backend: %w", err)
 		}

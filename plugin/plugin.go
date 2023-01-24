@@ -16,7 +16,8 @@ func Plugin() *source.Plugin {
 		"simple-analytics",
 		Version,
 		schema.Tables{
-			resources.DataPoints(),
+			resources.Events(),
+			resources.PageViews(),
 		},
 		client.New,
 	)

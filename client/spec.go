@@ -1,7 +1,10 @@
 package client
 
 import (
+	"errors"
 	"fmt"
+	"regexp"
+	"strconv"
 	"time"
 )
 
@@ -10,6 +13,8 @@ var DefaultStartTime = time.Date(2018, 1, 1, 0, 0, 0, 0, time.UTC)
 
 // AllowedTimeLayout is the layout used for the start_time and end_time fields, and matches what the export API supports
 var AllowedTimeLayout = "2006-01-02"
+
+var reValidDuration = regexp.MustCompile(`^(\d+)([dmy])$`)
 
 type Spec struct {
 	// UserID is the Simple Analytics API user ID.
@@ -33,6 +38,15 @@ type Spec struct {
 	// be fetched in a subsequent sync and guarantee at-least-once delivery, but can
 	// introduce duplicates.
 	WindowOverlapSeconds int `json:"window_overlap_seconds"`
+
+	// DurationStr is the duration of the time window to fetch historical data for, in days, months or years.
+	// Examples:
+	//  "7d": past 7 days
+	//  "3m": last 3 months
+	//  "1y": last year
+	// It is used to calculate start_time if it is not specified. If start_time is specified,
+	// duration is ignored.
+	DurationStr string `json:"duration"`
 }
 
 type WebsiteSpec struct {
@@ -67,11 +81,17 @@ func (s Spec) Validate() error {
 			return fmt.Errorf("could not parse end_time: %v", err)
 		}
 	}
+	if s.DurationStr != "" {
+		_, err := parseDuration(s.DurationStr)
+		if err != nil {
+			return fmt.Errorf("could not validate duration: %v (should be a number followed by \"d\", \"m\" or \"y\", e.g. \"7d\", \"1m\" or \"3y\")", err)
+		}
+	}
 	return nil
 }
 
 func (s *Spec) SetDefaults() {
-	if s.StartTimeStr == "" {
+	if s.StartTimeStr == "" && s.DurationStr == "" {
 		s.StartTimeStr = DefaultStartTime.Format(AllowedTimeLayout)
 	}
 	if s.EndTimeStr == "" {
@@ -83,6 +103,9 @@ func (s *Spec) SetDefaults() {
 }
 
 func (s Spec) StartTime() time.Time {
+	if s.StartTimeStr == "" && s.DurationStr != "" {
+		return time.Now().Add(-s.Duration())
+	}
 	t, _ := time.Parse(AllowedTimeLayout, s.StartTimeStr) // any error should be caught by Validate()
 	return t
 }
@@ -90,4 +113,30 @@ func (s Spec) StartTime() time.Time {
 func (s Spec) EndTime() time.Time {
 	t, _ := time.Parse(AllowedTimeLayout, s.EndTimeStr) // any error should be caught by Validate()
 	return t
+}
+
+func (s Spec) Duration() time.Duration {
+	d, _ := parseDuration(s.DurationStr) // any error should be caught by Validate()
+	return d
+}
+
+func parseDuration(s string) (time.Duration, error) {
+	m := reValidDuration.FindStringSubmatch(s)
+	if m == nil {
+		return 0, errors.New("invalid duration")
+	}
+	n, err := strconv.Atoi(m[1])
+	if err != nil {
+		return 0, err
+	}
+	switch m[2] {
+	case "d":
+		return time.Duration(n) * 24 * time.Hour, nil
+	case "m":
+		return time.Duration(n) * 30 * 24 * time.Hour, nil
+	case "y":
+		return time.Duration(n) * 365 * 24 * time.Hour, nil
+	}
+	// should never happen, we already validated using regex
+	panic("unhandled duration unit")
 }
