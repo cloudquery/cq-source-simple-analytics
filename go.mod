@@ -3,7 +3,7 @@ module github.com/cloudquery/cq-source-simple-analytics
 go 1.19
 
 require (
-	github.com/cloudquery/plugin-sdk v1.27.0
+	github.com/cloudquery/plugin-sdk v1.29.0
 	github.com/google/go-cmp v0.5.9
 	github.com/rs/zerolog v1.28.0
 	golang.org/x/sync v0.1.0
