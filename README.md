@@ -20,7 +20,7 @@ spec:
   name: "simple-analytics"
   path: "simpleanalytics/simple-analytics"
   version: "${VERSION}"
-  backend: "local" # remove this to always sync all data
+  # backend: "local" # use this to enable incremental syncing
   tables: 
     ["*"]
   destinations: 
@@ -74,6 +74,11 @@ spec:
     - `3m`: last 3 months
     - `1y`: last year
 
+
+## Incremental Syncing
+
+The Simple Analytics plugin supports incremental syncing. This means that only data points will be fetched from Simple Analytics and loaded into your destination. This is done by keeping track of the last date a sync was done, and only fetching new data from that date onwards.
+To enable this, `backend` option must be set in the spec (as shown in the example config above). By default, incremental syncing is turned off. For more information, see [Managing Incremental Tables](/docs/advanced-topics/managing-incremental-tables).
 
 ## Example Queries
 
