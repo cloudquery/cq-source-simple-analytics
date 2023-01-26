@@ -77,7 +77,7 @@ spec:
 
 ## Incremental Syncing
 
-The Simple Analytics plugin supports incremental syncing. This means that only data points will be fetched from Simple Analytics and loaded into your destination. This is done by keeping track of the last date a sync was done, and only fetching new data from that date onwards.
+The Simple Analytics plugin supports incremental syncing. This means that only new data points will be fetched from Simple Analytics and loaded into your destination. This is done by keeping track of the last date a sync was done, and only fetching new data from that date onwards.
 To enable this, `backend` option must be set in the spec (as shown in the example config above). By default, incremental syncing is turned off. For more information, see [Managing Incremental Tables](/docs/advanced-topics/managing-incremental-tables).
 
 ## Example Queries
